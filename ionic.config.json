@@ -1,0 +1,7 @@
+{
+  "name": "SimuladorCuidadoRecienNacidoNYL",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
