@@ -1,13 +1,41 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>dormir</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">dormir</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Barra de progreso -->
+  <div class="progress-container">
+    <div class="progress-bar" [style.width.%]="progress"></div>
+  </div>
+
+  <div class="scene">
+
+    <!-- Área del bebé (click + arrullar) -->
+    <div id="baby-area"
+         class="baby-area"
+         (click)="onBabyClick()"
+         (pointerdown)="startRock($event)"
+         (pointerup)="stopRock()">
+
+      <img [src]="babyImg"
+           class="baby-img"
+           [class.rocking]="isRocking">
+    </div>
+
+    <!-- Botón de luz como imagen -->
+        <!-- Herramientas (cobija, chupon y luz) -->
+        <div class="tools">
+       <img #draggable src="assets/Cobija.png" data-name="cobija" class="tool"
+         (pointerdown)="startDrag($event, $event.currentTarget)">
+       <img #draggable src="assets/Chupon.png" data-name="chupon" class="tool"
+         (pointerdown)="startDrag($event, $event.currentTarget)">
+       <img src="assets/lightOffButton.png" class="tool light-btn" (click)="toggleLight()">
+        </div>
+
+  </div>
+
+  <!-- Capa negra cuando la luz está apagada -->
+  <div class="night-overlay" *ngIf="lightOff"></div>
+
+  <div *ngIf="completed" class="done-msg">
+    ¡El bebé está durmiendo! 😴
+  </div>
+
 </ion-content>
