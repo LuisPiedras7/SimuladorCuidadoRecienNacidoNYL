@@ -1,13 +1,29 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>medicina</ion-title>
+    <ion-title>Medicina</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">medicina</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
+
+  <div class="progress-container">
+    <div class="progress-bar" [style.width.%]="progress"></div>
+  </div>
+
+  <div class="scene">
+
+    <div id="baby-area" class="baby-area">
+      <img [src]="babyImage" class="baby-img">
+    </div>
+
+    <div class="tools">
+      <img #draggable src="assets/imgs/medicina/Pañuelos.png" data-name="panuelo" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+      <img #draggable src="assets/imgs/medicina/Pomada.png" data-name="pomada" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+      <img #draggable src="assets/imgs/medicina/Trapo.png" data-name="trapo" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+    </div>
+
+  </div>
+
+  <div *ngIf="completed" class="done-msg">¡Tratamiento completado! ✅</div>
+
 </ion-content>

@@ -24,7 +24,7 @@ export class DormirPage {
   lightOff = false;
 
   isRocking = false;
-  babyImg = 'assets/BebeCuna.png';
+  babyImg = 'assets/imgs/dormir/BebeCuna.png';
 
   activeItem: HTMLElement | null = null;
   offsetX = 0;
@@ -139,7 +139,7 @@ export class DormirPage {
     const name = el.getAttribute('data-name');
 
     if (this.step === 1 && name === 'cobija') {
-      this.babyImg = 'assets/BebeCobija.png';
+      this.babyImg = 'assets/imgs/dormir/BebeCobija.png';
       this.step = 2;
       this.incrementProgress(25);
       return;
@@ -148,7 +148,7 @@ export class DormirPage {
     // Después de la cobija, el usuario coloca el chupon. Tras esto deberá
     // apagar la luz (step=3) antes de poder arrullar.
     if (this.step === 2 && name === 'chupon') {
-      this.babyImg = 'assets/BebeChupon.png';
+      this.babyImg = 'assets/imgs/dormir/BebeChupon.png';
       this.step = 3; // siguiente paso: apagar la luz
       this.incrementProgress(25);
       return;
