@@ -1,0 +1,46 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">registro</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content> -->
+
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <form (ngSubmit)="registrar()">
+
+    <ion-item>
+      <ion-label position="floating">Nombre completo</ion-label>
+      <ion-input [(ngModel)]="nombre" name="nombre"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Edad</ion-label>
+      <ion-input type="number" [(ngModel)]="edad" name="edad"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">CURP</ion-label>
+      <ion-input maxlength="18" [(ngModel)]="curp" name="curp"></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" class="ion-margin-top">
+      Registrar
+    </ion-button>
+
+  </form>
+
+</ion-content>
