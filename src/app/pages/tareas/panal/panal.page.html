@@ -1,13 +1,31 @@
-<ion-header [translucent]="true">
+<!-- <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>panal</ion-title>
+    <ion-title>Cambio de Pañal</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">panal</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
+
+  <div class="progress-container">
+    <div class="progress-bar" [style.width.%]="progress"></div>
+  </div>
+
+  <div class="scene">
+
+    <div id="baby-area" class="baby-area" (click)="onBabyClick()">
+      <img src="assets/Bebe.png" class="baby-img">
+    </div>
+
+    <div class="tools">
+      <img #draggable src="assets/ToallasHumedas.png" data-name="toallas" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+      <img #draggable src="assets/Talco.png" data-name="talco" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+      <img #draggable src="assets/Pañal.png" data-name="panal" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+    </div>
+
+  </div>
+
+  <div *ngIf="completed" class="done-msg">
+    ¡Cambio de pañal completado! ✅
+  </div>
+
 </ion-content>
