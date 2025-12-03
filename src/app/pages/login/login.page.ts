@@ -38,7 +38,7 @@ import { HttpClient } from '@angular/common/http';
 export class LoginPage implements OnInit {
   curp = '';
 
-  constructor(private http: HttpClient, private router: Router, private auth: Auth) {}
+  constructor(private http: HttpClient, private router: Router, private auth: Auth) { }
 
   login() {
     this.http.post('http://localhost:3000/login', { curp: this.curp })
@@ -46,6 +46,17 @@ export class LoginPage implements OnInit {
         next: (res: any) => {
           console.log('Login correcto', res);
           this.auth.setCurp(this.curp);
+          console.log('res.bebe_vivo: ', res.usuario.bebe_vivo);
+          // Blur active element to avoid accessibility warnings when navigating
+          try { (document.activeElement as HTMLElement)?.blur(); } catch (e) { }
+
+          // Si el backend indica que el bebé no está vivo, ir a /morir
+          // Aceptamos false o 0 (algún backend devuelve 0 en lugar de false)
+          if (res && (res.usuario.bebe_vivo === false || res.usuario.bebe_vivo === 0 || res.usuario.bebe_vivo === '0')) {
+            this.router.navigate(['/morir']);
+            return;
+          }
+
           this.router.navigate(['/home']);
         },
         error: () => {
@@ -54,5 +65,5 @@ export class LoginPage implements OnInit {
       });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }

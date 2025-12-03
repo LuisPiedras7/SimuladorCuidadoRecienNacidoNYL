@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-morir',
   templateUrl: './morir.page.html',
   styleUrls: ['./morir.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonButton, CommonModule]
 })
-export class MorirPage implements OnInit {
+export class MorirPage {
+  constructor(private auth: Auth, private router: Router) {}
 
-  constructor() { }
-
-  ngOnInit() {
+  logout() {
+    this.auth.clear();
+    this.router.navigate(['/login']);
   }
-
 }
