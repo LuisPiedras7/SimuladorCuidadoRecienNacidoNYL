@@ -1,13 +1,30 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>banar</ion-title>
+    <ion-title>Bañar</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">banar</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
+
+  <div class="progress-container">
+    <div class="progress-bar" [style.width.%]="progress"></div>
+  </div>
+
+  <div class="scene">
+
+    <div id="baby-area" class="baby-area" (click)="onBabyClick()">
+      <img [src]="babyImage" class="baby-img">
+    </div>
+
+    <div class="tools">
+      <img #draggable src="assets/imgs/banar/Shampoo.png" data-name="shampoo" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+      <img #draggable src="assets/imgs/banar/Jabon.png" data-name="jabon" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+      <img #draggable src="assets/imgs/banar/Regadera.png" data-name="regadera" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+      <img #draggable src="assets/imgs/banar/Toalla.png" data-name="toalla" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+    </div>
+
+  </div>
+
+  <div *ngIf="completed" class="done-msg">¡Baño completado! ✅</div>
+
 </ion-content>
