@@ -3,7 +3,7 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-actividad-info',
+  selector: 'app-actividad-info-medicina',
   standalone: true,
   imports: [IonicModule, CommonModule],
   template: `

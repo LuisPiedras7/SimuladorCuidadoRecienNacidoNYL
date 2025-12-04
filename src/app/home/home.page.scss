@@ -82,6 +82,22 @@
   --background: #ffca6c;
 }
 
+/* Apariencia para botones bloqueados */
+.task-btn[disabled] {
+  opacity: 0.55;
+  filter: grayscale(60%) brightness(0.95);
+  box-shadow: none;
+  cursor: not-allowed;
+  color: rgba(255,255,255,0.85);
+}
+
+/* Opcional: reducir la intensidad del color de fondo usando la variable CSS que Ionic usa */
+.task-btn[disabled].alimentar { --background: rgba(255,145,164,0.35); }
+.task-btn[disabled].banar     { --background: rgba(107,199,255,0.35); }
+.task-btn[disabled].dormir    { --background: rgba(180,139,255,0.35); }
+.task-btn[disabled].medicina  { --background: rgba(123,219,168,0.35); }
+.task-btn[disabled].panal     { --background: rgba(255,202,108,0.35); }
+
 /* Adaptar a horizontal */
 @media (orientation: landscape) {
   .baby-container {
