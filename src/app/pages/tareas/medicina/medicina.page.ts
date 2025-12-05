@@ -1,8 +1,7 @@
 import { Component, ElementRef, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { IonicModule, PopoverController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ActividadInfoComponent } from './actividad-info.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -25,6 +24,14 @@ export class MedicinaPage implements OnInit {
   // baby image path
   babyImage = 'assets/imgs/medicina/BebeMocos.png';
 
+  // Inline HTML info overlay (replace popover)
+  showInfo = false;
+  infoSteps: string[] = [
+    'Paso 1: Limpia suavemente la zona con el pañuelo.',
+    'Paso 2: Aplica la pomada con cuidado sobre la zona afectada.',
+    'Paso 3: Coloca el trapo para proteger y dejar actuar.'
+  ];
+
   @ViewChildren('draggable') draggableItems!: QueryList<ElementRef>;
   originalPositions = new Map<string, { x: number; y: number }>();
 
@@ -35,7 +42,7 @@ export class MedicinaPage implements OnInit {
   actividadId: number | null = null;
   private actividadCompletedPosted = false;
 
-  constructor(private popoverCtrl: PopoverController, private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.queryParamMap.get('actividadId');
@@ -46,32 +53,81 @@ export class MedicinaPage implements OnInit {
     console.log('[Medicina] ngOnInit actividadId=', this.actividadId);
   }
 
-  async openInfo(ev: Event) {
-    const pop = await this.popoverCtrl.create({
-      component: ActividadInfoComponent,
-      event: ev,
-      translucent: true,
-      backdropDismiss: true
-    });
-    await pop.present();
+  // show inline overlay (works reliably in APK)
+  openInfo(_ev?: Event) {
+    this.showInfo = true;
+  }
+
+  closeInfo() {
+    this.showInfo = false;
   }
 
   ngAfterViewInit() {
-    this.draggableItems.forEach(item => {
-      const el: HTMLElement = item.nativeElement;
-      el.style.position = 'absolute';
+    // Wait a frame so layout is stable (parent widths computed), then convert % to px and clamp
+    requestAnimationFrame(() => {
+      this.draggableItems.forEach(item => {
+        const el: HTMLElement = item.nativeElement;
 
-      const cs = window.getComputedStyle(el);
-      let left = parseFloat(cs.left as string);
-      let top = parseFloat(cs.top as string);
+        const cs = window.getComputedStyle(el);
+        const leftRaw = cs.left as string;
+        const topRaw = cs.top as string;
 
-      if (Number.isNaN(left)) left = el.offsetLeft;
-      if (Number.isNaN(top)) top = el.offsetTop;
+        let left: number;
+        let top: number;
 
-      const name = el.getAttribute('data-name') || '';
-      if (name) this.originalPositions.set(name, { x: left, y: top });
-      if (!el.style.left) el.style.left = left + 'px';
-      if (!el.style.top) el.style.top = top + 'px';
+        const parent = el.parentElement as HTMLElement | null;
+        const parentRect = parent ? parent.getBoundingClientRect() : { width: 0, height: 0 } as DOMRect;
+
+        if (leftRaw && leftRaw.includes('%')) {
+          const pct = parseFloat(leftRaw);
+          left = parentRect.width * (pct / 100);
+        } else {
+          left = parseFloat(leftRaw as string);
+        }
+
+        if (topRaw && topRaw.includes('%')) {
+          const pct = parseFloat(topRaw);
+          top = parentRect.height * (pct / 100);
+        } else {
+          top = parseFloat(topRaw as string);
+        }
+
+        if (Number.isNaN(left)) left = el.offsetLeft;
+        if (Number.isNaN(top)) top = el.offsetTop;
+
+        // account for any transform translateX (matrix tx)
+        let tx = 0;
+        try {
+          const transform = cs.transform;
+          if (transform && transform !== 'none') {
+            const m = transform.match(/matrix\(([^)]+)\)/);
+            if (m) {
+              const parts = m[1].split(',').map(p => parseFloat(p));
+              if (parts.length >= 6 && !Number.isNaN(parts[4])) tx = parts[4];
+            }
+          }
+        } catch (e) { tx = 0; }
+
+        const elW = el.offsetWidth;
+        const elH = el.offsetHeight;
+
+        const minLeft = -tx;
+        const maxLeft = parentRect.width - elW - tx;
+        const minTop = 0;
+        const maxTop = Math.max(0, parentRect.height - elH);
+
+        if (Number.isFinite(minLeft) && Number.isFinite(maxLeft)) left = Math.min(Math.max(left, minLeft), maxLeft);
+        if (Number.isFinite(minTop) && Number.isFinite(maxTop)) top = Math.min(Math.max(top, minTop), maxTop);
+
+        // ensure absolute positioning after measuring
+        el.style.position = 'absolute';
+
+        const name = el.getAttribute('data-name') || '';
+        if (name) this.originalPositions.set(name, { x: left, y: top });
+
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+      });
     });
   }
 

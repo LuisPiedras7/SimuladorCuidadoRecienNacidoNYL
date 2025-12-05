@@ -20,10 +20,9 @@ export class AlimentarPage implements OnInit {
 } */
 
 import { Component, ElementRef, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { IonicModule, PopoverController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ActividadInfoComponent } from './actividad-info.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -50,7 +49,16 @@ export class AlimentarPage implements OnInit {
   actividadId: number | null = null;
   private actividadCompletedPosted = false;
 
-  constructor(private popoverCtrl: PopoverController, private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
+  // Inline overlay state (replaces Popover)
+  showInfo = false;
+  infoSteps: string[] = [
+    'Paso 1: Sostén el biberón de forma segura.',
+    'Paso 2: Asegúrate que la temperatura sea tibia.',
+    'Paso 3: Alimenta con calma y observa la reacción del bebé.',
+    'Paso 4: Limpia y guarda los utensilios después de usar.'
+  ];
+
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
 
   ngAfterViewInit() {
     // Guardar posiciones iniciales relativas al contenedor (.food-items)
@@ -73,14 +81,13 @@ export class AlimentarPage implements OnInit {
     });
   }
 
-  async openInfo(ev: Event) {
-    const pop = await this.popoverCtrl.create({
-      component: ActividadInfoComponent,
-      event: ev,
-      translucent: true,
-      backdropDismiss: true
-    });
-    await pop.present();
+  // Show inline HTML overlay instead of Popover (works reliably in APK)
+  openInfo(_ev?: Event) {
+    this.showInfo = true;
+  }
+
+  closeInfo() {
+    this.showInfo = false;
   }
 
   ngOnInit(): void {

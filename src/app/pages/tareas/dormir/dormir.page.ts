@@ -1,8 +1,7 @@
 import { Component, ElementRef, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { IonicModule, PopoverController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ActividadInfoComponent } from './actividad-info.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -25,7 +24,16 @@ export class DormirPage implements OnInit {
   // 3 = apagar luz (debe apagarse antes de arrullar)
   // 4 = arrullo
 
-  constructor(private popoverCtrl: PopoverController, private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
+  // Inline overlay state (replaces Popover)
+  showInfo = false;
+  infoSteps: string[] = [
+    'Paso 1: Coloca la cobija suavemente sobre el bebé.',
+    'Paso 2: Ofrece el chupón para calmarlo si lo necesita.',
+    'Paso 3: Apaga la luz para crear un ambiente tranquilo.',
+    'Paso 4: Arrulla con movimientos suaves hasta que duerma.'
+  ];
+
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
 
   // actividadId (opcional) desde query params
   actividadId: number | null = null;
@@ -40,14 +48,13 @@ export class DormirPage implements OnInit {
     console.log('[Dormir] ngOnInit actividadId=', this.actividadId);
   }
 
-  async openInfo(ev: Event) {
-    const pop = await this.popoverCtrl.create({
-      component: ActividadInfoComponent,
-      event: ev,
-      translucent: true,
-      backdropDismiss: true
-    });
-    await pop.present();
+  // Show inline HTML overlay (works reliably in APK)
+  openInfo(_ev?: Event) {
+    this.showInfo = true;
+  }
+
+  closeInfo() {
+    this.showInfo = false;
   }
 
   lightOff = false;
@@ -63,22 +70,79 @@ export class DormirPage implements OnInit {
   originalPositions = new Map<string, { x: number; y: number }>();
 
   ngAfterViewInit() {
-    this.draggableItems.forEach(item => {
-      const el = item.nativeElement as HTMLElement;
-      el.style.position = 'absolute';
+    // Wait for a frame so layout (parent widths) are stable, avoiding 0px measurements
+    requestAnimationFrame(() => {
+      this.draggableItems.forEach(item => {
+        const el = item.nativeElement as HTMLElement;
 
-      const cs = window.getComputedStyle(el);
-      let left = parseFloat(cs.left);
-      let top = parseFloat(cs.top);
+        const cs = window.getComputedStyle(el);
+        const leftRaw = cs.left as string;
+        const topRaw = cs.top as string;
 
-      if (Number.isNaN(left)) left = el.offsetLeft;
-      if (Number.isNaN(top)) top = el.offsetTop;
+        let left: number;
+        let top: number;
 
-      const name = el.getAttribute('data-name') || '';
-      if (name) this.originalPositions.set(name, { x: left, y: top });
+        // If computed style uses percentages (e.g., "8%"), convert to pixels relative to parent
+        const parent = el.parentElement as HTMLElement | null;
+        const parentRect = parent ? parent.getBoundingClientRect() : { width: 0, height: 0 } as DOMRect;
 
-      el.style.left = left + 'px';
-      el.style.top = top + 'px';
+        if (leftRaw && leftRaw.includes('%')) {
+          const pct = parseFloat(leftRaw);
+          left = parentRect.width * (pct / 100);
+        } else {
+          left = parseFloat(leftRaw as string);
+        }
+
+        if (topRaw && topRaw.includes('%')) {
+          const pct = parseFloat(topRaw);
+          top = parentRect.height * (pct / 100);
+        } else {
+          top = parseFloat(topRaw as string);
+        }
+
+        if (Number.isNaN(left)) left = el.offsetLeft;
+        if (Number.isNaN(top)) top = el.offsetTop;
+
+        // take into account any computed transform (matrix tx) so we can clamp
+        let tx = 0;
+        try {
+          const transform = cs.transform;
+          if (transform && transform !== 'none') {
+            const m = transform.match(/matrix\(([^)]+)\)/);
+            if (m) {
+              const parts = m[1].split(',').map(p => parseFloat(p));
+              // matrix(a, b, c, d, tx, ty)
+              if (parts.length >= 6 && !Number.isNaN(parts[4])) tx = parts[4];
+            }
+          }
+        } catch (e) { tx = 0; }
+
+        // clamp so final visual position (left + tx) stays within [0, parentWidth - elWidth]
+        const elW = el.offsetWidth;
+        const elH = el.offsetHeight;
+
+        const minLeft = -tx; // L >= -T
+        const maxLeft = parentRect.width - elW - tx; // L <= P - W - T
+        const minTop = 0;
+        const maxTop = Math.max(0, parentRect.height - elH);
+
+        if (Number.isFinite(minLeft) && Number.isFinite(maxLeft)) {
+          left = Math.min(Math.max(left, minLeft), maxLeft);
+        }
+        if (Number.isFinite(minTop) && Number.isFinite(maxTop)) {
+          top = Math.min(Math.max(top, minTop), maxTop);
+        }
+
+        // ensure absolute positioning after measurements
+        el.style.position = 'absolute';
+
+        const name = el.getAttribute('data-name') || '';
+        if (name) this.originalPositions.set(name, { x: left, y: top });
+
+        // write computed pixel values as inline style so dragging uses correct positions
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+      });
     });
   }
 

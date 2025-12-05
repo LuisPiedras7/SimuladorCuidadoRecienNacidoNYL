@@ -75,4 +75,12 @@ ion-content.listado-page{
 /* give the list room so content isn't hidden behind the fixed footer */
 .list-wrap { padding-bottom: 88px; }
 
-ion-button.enter-btn{ --background: linear-gradient(90deg,#ff6a88,#ffb86b,#7c4dff); color:#fff; border-radius:12px; font-weight:800; }
+/* Ensure the enter-like button always has visible white text across themes */
+ion-button.enter-btn{
+	--background: linear-gradient(90deg,#ff6a88,#ffb86b,#7c4dff);
+	--color: #ffffff !important;
+	color: #ffffff !important;
+	border-radius:12px;
+	font-weight:800;
+	text-shadow: none !important;
+}

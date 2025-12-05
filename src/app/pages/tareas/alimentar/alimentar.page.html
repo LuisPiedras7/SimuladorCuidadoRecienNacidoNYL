@@ -10,53 +10,87 @@
 
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="openInfo($event)" title="Información de la actividad">
-        <!-- <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon> -->
-         ---
+        ---
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
+<ion-content class="alimentar-page" (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
 
-  <!-- Barra de progreso -->
-  <!-- DEBUG: mostrar actividadId y botón para forzar POST -->
-  <div class="debug-panel" style="padding:8px; text-align:center;">
-    <div style="margin-bottom:6px; font-size:0.9rem; color:#333;">ActividadId: <strong>{{ actividadId || '---' }}</strong></div>
-    <ion-button size="small" color="secondary" (click)="completarActividad()">Enviar POST de prueba</ion-button>
+  <!-- Background decorative shapes (same concept as Bañar / Login) -->
+  <div class="falling-area" aria-hidden="true">
+    <div class="drop d1"></div>
+    <div class="drop d2"></div>
+    <div class="drop d3"></div>
+    <div class="drop d4"></div>
+    <div class="drop d5"></div>
   </div>
-  <div class="progress-container">
-    <div class="progress-bar" [style.width.%]="progress"></div>
-  </div>
 
-  <div class="scene">
+  <div class="center-wrap">
+    <div class="card">
+      <h1 class="page-title">Alimentar</h1>
+      <p class="subtitle">Usa los objetos para alimentar al bebé.</p>
 
-    <!-- Área del bebé -->
-    <div id="baby-area" class="baby-area">
-      <img src="assets/imgs/alimentar/Bebe.png" class="baby-img">
+      <!-- Debug panel (moved inside card) -->
+      <!-- <div class="debug-panel" style="padding:6px; text-align:center;">
+        <div style="margin-bottom:6px; font-size:0.9rem; color:#333;">ActividadId: <strong>{{ actividadId || '---' }}</strong></div>
+        <ion-button size="small" color="secondary" (click)="completarActividad()">Enviar POST de prueba</ion-button>
+      </div> -->
+
+      <!-- Progress bar -->
+      <div class="progress-container">
+        <div class="progress-bar" [style.width.%]="progress"></div>
+      </div>
+
+      <div class="scene">
+
+        <!-- Área del bebé -->
+        <div id="baby-area" class="baby-area">
+          <img src="assets/imgs/alimentar/Bebe.png" class="baby-img">
+        </div>
+
+        <!-- Objetos arrastrables -->
+        <div class="food-items">
+
+          <img #foodItem
+            src="assets/imgs/alimentar/Biberon.png"
+            class="food"
+            (pointerdown)="startDrag($event, $event.currentTarget)"
+          >
+
+          <img #foodItem
+            src="assets/imgs/alimentar/Gerber.png"
+            class="food"
+            (pointerdown)="startDrag($event, $event.currentTarget)"
+          >
+
+        </div>
+
+      </div>
+
     </div>
+  </div>
 
-    <!-- Objetos arrastrables -->
-    <div class="food-items">
-
-      <img #foodItem
-        src="assets/imgs/alimentar/Biberon.png"
-        class="food"
-        (pointerdown)="startDrag($event, $event.currentTarget)"
-      >
-
-      <img #foodItem
-        src="assets/imgs/alimentar/Gerber.png"
-        class="food"
-        (pointerdown)="startDrag($event, $event.currentTarget)"
-      >
-
+  <!-- Inline info overlay: visible on APK where Popover may fail (same style as Bañar) -->
+  <div class="info-overlay" *ngIf="showInfo">
+    <div class="info-card">
+      <div class="info-header" style="color: black;">
+        <h3>Instrucciones</h3>
+        <button class="close-btn" (click)="closeInfo()">✕</button>
+      </div>
+      <div class="info-body">
+        <ol>
+          <li *ngFor="let s of infoSteps">{{ s }}</li>
+        </ol>
+      </div>
+      <div class="info-actions">
+        <ion-button expand="block" (click)="closeInfo()" class="enter-btn">Cerrar</ion-button>
+      </div>
     </div>
-
   </div>
 
-  <div *ngIf="progress === 100" class="done-msg">
-    ¡El bebé está lleno! 😊
-  </div>
+  <!-- Done message: fixed to bottom like Bañar -->
+  <div *ngIf="progress === 100" class="done-msg">¡El bebé está lleno! 😊</div>
 
 </ion-content>

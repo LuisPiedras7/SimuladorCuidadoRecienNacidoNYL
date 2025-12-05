@@ -10,19 +10,61 @@
 
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="openInfo($event)" title="Información de la actividad">
-        <!-- <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon> -->
-         ---
+        ---
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
+<ion-content class="banar-page" [fullscreen]="true" (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
+
+  <!-- Background decorative shapes (same concept as Login) -->
+  <div class="falling-area" aria-hidden="true">
+    <div class="drop d1"></div>
+    <div class="drop d2"></div>
+    <div class="drop d3"></div>
+    <div class="drop d4"></div>
+    <div class="drop d5"></div>
+  </div>
+
+  <div class="center-wrap">
+    <div class="card">
+      <h1 class="page-title">Bañar</h1>
+      <p class="subtitle">Sigue las instrucciones y arrastra/usa las herramientas sobre el bebé.</p>
+
+      <!-- Progress bar -->
+      <div class="progress-container">
+        <div class="progress-bar" [style.width.%]="progress"></div>
+      </div>
+
+      <!-- Scene area (kept logic intact) -->
+      <div class="scene">
+        <div id="baby-area" class="baby-area" (click)="onBabyClick()">
+          <img [src]="babyImage" class="baby-img">
+        </div>
+
+        <div class="tools">
+          <img #draggable src="assets/imgs/banar/Shampoo.png" data-name="shampoo" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+          <img #draggable src="assets/imgs/banar/Jabon.png" data-name="jabon" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+          <img #draggable src="assets/imgs/banar/Regadera.png" data-name="regadera" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+          <img #draggable src="assets/imgs/banar/Toalla.png" data-name="toalla" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
+        </div>
+      </div>
+
+      <!-- <div class="actions" style="margin-top:12px;">
+        <ion-button expand="block" color="secondary" (click)="openInfo($event)" class="open-info">Ver instrucciones</ion-button>
+      </div>
+
+      <div class="debug-controls" style="padding:6px; text-align:center;">
+        <ion-button size="small" color="secondary" (click)="completarActividad()">Enviar POST de prueba</ion-button>
+      </div> -->
+    </div>
+  </div>
 
   <!-- Inline info overlay: visible on APK where Popover may fail -->
   <div class="info-overlay" *ngIf="showInfo">
     <div class="info-card">
-      <div class="info-header">
+      <div class="info-header" style="color: black;">
         <h3>Instrucciones</h3>
         <button class="close-btn" (click)="closeInfo()">✕</button>
       </div>
@@ -32,34 +74,12 @@
         </ol>
       </div>
       <div class="info-actions">
-        <ion-button expand="block" (click)="closeInfo()">Cerrar</ion-button>
+        <ion-button expand="block" (click)="closeInfo()" class="enter-btn">Cerrar</ion-button>
       </div>
     </div>
   </div>
 
-  <div class="progress-container">
-    <div class="progress-bar" [style.width.%]="progress"></div>
-  </div>
-
-  <div class="scene">
-
-    <div id="baby-area" class="baby-area" (click)="onBabyClick()">
-      <img [src]="babyImage" class="baby-img">
-    </div>
-
-    <div class="tools">
-      <img #draggable src="assets/imgs/banar/Shampoo.png" data-name="shampoo" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
-      <img #draggable src="assets/imgs/banar/Jabon.png" data-name="jabon" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
-      <img #draggable src="assets/imgs/banar/Regadera.png" data-name="regadera" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
-      <img #draggable src="assets/imgs/banar/Toalla.png" data-name="toalla" class="tool" (pointerdown)="startDrag($event, $event.currentTarget)">
-    </div>
-
-  </div>
-
+  <!-- Done message: fixed to bottom like user requested -->
   <div *ngIf="completed" class="done-msg">¡Baño completado! ✅</div>
-
-  <div class="debug-controls" style="padding:12px; text-align:center;">
-    <ion-button size="small" color="secondary" (click)="completarActividad()">Enviar POST de prueba</ion-button>
-  </div>
 
 </ion-content>

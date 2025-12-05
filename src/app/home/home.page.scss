@@ -1,6 +1,10 @@
 /* Fondo tipo habitación infantil */
 .baby-bg {
-  --background: linear-gradient(#d9f4ff, #fff8e6);
+  /* Reuse Login's pastel gradient and falling shapes look */
+  --background: none;
+  background: linear-gradient(120deg, #ffd3e0 0%, #ffecd2 25%, #d6ecff 55%, #f0e0ff 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 9s ease-in-out infinite;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -9,13 +13,28 @@
 
 /* Barra superior */
 .header-toolbar {
-  background: #74c8ff;
+  /* Instagram-like gradient for the top bar */
+  background: linear-gradient(90deg, #ff6a88 0%, #ffb86b 45%, #7c4dff 100%);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(124,77,255,0.08);
 }
 
 .header-title {
-  font-family: 'Comic Sans MS', cursive;
+  font-family: 'Madimi One', 'Baloo 2', 'Comic Sans MS', cursive;
   font-size: 1.4rem;
-  color: white;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Small badge behind the title text with an Instagram-like gradient */
+.title-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #ff8a00 0%, #d53cff 100%);
+  color: #ffffff;
+  font-weight: 800;
 }
 
 /* Contenedor principal */
@@ -33,6 +52,71 @@
 
   height: calc(100vh - 80px);
 }
+
+/* position falling-area under content (defined in login styles when imported elsewhere) */
+.falling-area { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.baby-container { position: relative; z-index: 1001; }
+
+/* Use the same friendly fonts as Login */
+@import "../pages/login/login.page.scss";
+
+/* Buttons: use gradient backgrounds from variables defined per-category */
+.task-btn {
+  color: #fff !important;
+  font-family: 'Baloo 2', 'Poppins', sans-serif;
+  --background: var(--background, #ccc);
+  border-radius: 18px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 18px rgba(12,40,20,0.06);
+}
+
+/* Category gradients (pastel, light->dark) */
+.alimentar { --background: linear-gradient(90deg,#ffd1dc,#ff90a4); }
+.banar    { --background: linear-gradient(90deg,#cfefff,#6bc7ff); }
+.dormir   { --background: linear-gradient(90deg,#e7dcff,#b48bff); }
+.medicina { --background: linear-gradient(90deg,#c8f7df,#7bdba8); }
+.panal    { --background: linear-gradient(90deg,#fff0c4,#ffca6c); }
+
+/* Header buttons */
+.act-btn {
+  /* Light green rounded button for Actividades */
+  --background: linear-gradient(90deg, #bff5d6 0%, #7bdba8 100%);
+  background: linear-gradient(90deg, #bff5d6, #7bdba8) !important;
+  color: #ffffff !important;
+  border-radius: 24px !important;
+  padding: 8px 14px !important;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(22,110,60,0.12);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.logout-btn {
+  /* Strong red button for Salir */
+  --background: linear-gradient(90deg,#ff7b85 0%,#ff4c4c 100%);
+  background: linear-gradient(90deg,#ff7b85,#ff4c4c) !important;
+  color: #ffffff !important;
+  border-radius: 20px !important;
+  padding: 8px 12px !important;
+  font-weight:700;
+  box-shadow: 0 8px 18px rgba(255,80,80,0.12);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Fix for black/opaque backgrounds appearing behind button text in some WebViews
+   Target the native button part and force background + text color so there's
+   no stray dark box behind the label. */
+ion-button.act-btn::part(native), ion-button.logout-btn::part(native) {
+  background: var(--background) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Extra specificity for shadow DOM inner elements (fallback) */
+ion-button.act-btn, ion-button.logout-btn {
+  color: #ffffff !important;
+}
+
+/* Ensure header buttons don't overlap on small screens */
+.header-toolbar ion-buttons { display:flex; gap:8px; }
 
 /* Imagen del bebé */
 .baby-img {

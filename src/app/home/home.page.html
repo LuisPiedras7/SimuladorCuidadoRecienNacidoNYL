@@ -1,22 +1,30 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="primary" class="header-toolbar">
+  <ion-toolbar class="header-toolbar">
     <ion-title class="header-title">
-      Mi Bebé
+      <span class="title-badge">Mi Bebé</span>
     </ion-title>
 
     <ion-buttons slot="end">
-      <ion-button fill="clear" title="Actividades" (click)="openActivities()" [disabled]="!isLoggedIn">
-        Act
+      <ion-button class="act-btn" fill="solid" title="Actividades" (click)="openActivities()" [disabled]="!isLoggedIn">
+        Actividades
       </ion-button>
 
-      <ion-button color="danger" fill="solid" shape="round" (click)="logout()" [disabled]="!isLoggedIn">
-        Cerrar sesión
+      <ion-button class="logout-btn" fill="solid" shape="round" (click)="logout()" [disabled]="!isLoggedIn">
+        Salir
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="baby-bg">
+  <!-- Fondo con figuras que caen (reusa estilo Login) -->
+  <div class="falling-area" aria-hidden="true">
+    <div class="drop d1"></div>
+    <div class="drop d2"></div>
+    <div class="drop d3"></div>
+    <div class="drop d4"></div>
+    <div class="drop d5"></div>
+  </div>
   <div class="baby-container">
 
     <!-- Imagen del bebé -->
@@ -37,11 +45,11 @@
       </ion-button>
 
       <ion-button expand="block" shape="round" class="task-btn medicina" [routerLink]="['/tareas/medicina']" [queryParams]="{ actividadId: actividadesIds['medicina'] }" [disabled]="!actividadesHabilitadas.medicina">
-        💊 Medicina
+        💊 Curar
       </ion-button>
 
       <ion-button expand="block" shape="round" class="task-btn panal" [routerLink]="['/tareas/panal']" [queryParams]="{ actividadId: actividadesIds['panal'] }" [disabled]="!actividadesHabilitadas.panal">
-        🍼 Pañal
+        🍼 Cambiar Pañal
       </ion-button>
     </div>
 
