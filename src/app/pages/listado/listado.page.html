@@ -20,7 +20,7 @@
   </div>
   <div class="list-wrap">
     <div *ngIf="actividades && actividades.length > 0">
-      <div *ngFor="let a of actividades" class="activity-card" [class.completed]="a.completada" (click)="openActividad(a)">
+      <div *ngFor="let a of actividades" class="activity-card" [class.completed]="a.completada">
         <div class="actividad-info">
           <div class="actividad-title">{{ a.actividad }}</div>
           <div class="actividad-date">{{ a.fecha_inicial | date:'short' }} <span class="sep">·</span> {{ a.fecha_limite | date:'short' }}</div>
