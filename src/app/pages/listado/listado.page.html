@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" aria-label="Volver">
+        <
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Actividades de hoy xd</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="listado-page">
+  <!-- Fondo con figuras que caen (reusa las clases del login) -->
+  <div class="falling-area" aria-hidden="true">
+    <div class="drop d1"></div>
+    <div class="drop d2"></div>
+    <div class="drop d3"></div>
+    <div class="drop d4"></div>
+    <div class="drop d5"></div>
+  </div>
+  <div class="list-wrap">
+    <div *ngIf="actividades && actividades.length > 0">
+      <div *ngFor="let a of actividades" class="activity-card" [class.completed]="a.completada" (click)="openActividad(a)">
+        <div class="actividad-info">
+          <div class="actividad-title">{{ a.actividad }}</div>
+          <div class="actividad-date">{{ a.fecha_inicial | date:'short' }} <span class="sep">·</span> {{ a.fecha_limite | date:'short' }}</div>
+        </div>
+        <div class="actividad-status">
+          <ion-icon [name]="a.completada ? 'checkmark-circle' : 'ellipse'" [color]="a.completada ? 'success' : 'medium'"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!actividades || actividades.length === 0" class="empty">No hay actividades para hoy</div>
+  </div>
+</ion-content>
+
+<ion-footer class="fixed-footer">
+  <ion-toolbar>
+    <ion-button expand="block" class="enter-btn" (click)="generateReport()">Generar reporte (PDF)</ion-button>
+  </ion-toolbar>
+</ion-footer>

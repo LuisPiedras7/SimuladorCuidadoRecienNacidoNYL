@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { Auth } from '../services/auth';
 import { HttpClient } from '@angular/common/http';
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
-import { ActividadesModalComponent } from './actividades-modal.component';
 
 // ----------------------------
 // INTERFAZ PARA LAS ACTIVIDADES
@@ -49,7 +48,6 @@ export class HomePage implements OnInit {
   constructor(
     private auth: Auth,
     private router: Router,
-    private modalCtrl: ModalController,
     private http: HttpClient
   ) {}
 
@@ -260,29 +258,13 @@ export class HomePage implements OnInit {
   }
 
   async openActivities() {
-    const curp = this.auth.getCurp();
-    if (!curp) {
-      alert('No hay CURP registrada. Inicia sesión primero.');
-      return;
-    }
-
-    const url = `${this.API_URL}/actividades/dia/${curp}`;
     try {
-      const raw: string = (await this.http.get(url, { responseType: 'text' }).toPromise()) ?? '';
-      const parsed: any = JSON.parse(raw);
-      const actividades: Actividad[] = parsed?.actividades || [];
-
-      // Actualizar botones cada vez que se abre el modal
-      this.actualizarBotonesSegunActividades(actividades);
-
-      const modal = await this.modalCtrl.create({
-        component: ActividadesModalComponent,
-        componentProps: { actividades },
-      });
-      await modal.present();
+      // Refrescar actividades y estados de botones antes de navegar
+      await this.cargarActividades();
+      await this.router.navigate(['/listado']);
     } catch (err) {
-      console.error('[Home] error fetching activities', err);
-      alert('Error al obtener actividades del día. Revisa la consola para más detalles.');
+      console.error('[Home] error opening activities page', err);
+      alert('Error al abrir la lista de actividades. Revisa la consola para más detalles.');
     }
   }
 

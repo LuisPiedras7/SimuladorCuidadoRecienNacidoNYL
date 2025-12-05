@@ -19,6 +19,24 @@
 
 <ion-content [fullscreen]="true" (pointermove)="moveDrag($event)" (pointerup)="endDrag($event)" (pointercancel)="endDrag($event)">
 
+  <!-- Inline info overlay: visible on APK where Popover may fail -->
+  <div class="info-overlay" *ngIf="showInfo">
+    <div class="info-card">
+      <div class="info-header">
+        <h3>Instrucciones</h3>
+        <button class="close-btn" (click)="closeInfo()">✕</button>
+      </div>
+      <div class="info-body">
+        <ol>
+          <li *ngFor="let s of infoSteps">{{ s }}</li>
+        </ol>
+      </div>
+      <div class="info-actions">
+        <ion-button expand="block" (click)="closeInfo()">Cerrar</ion-button>
+      </div>
+    </div>
+  </div>
+
   <div class="progress-container">
     <div class="progress-bar" [style.width.%]="progress"></div>
   </div>

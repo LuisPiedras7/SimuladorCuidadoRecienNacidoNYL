@@ -1,8 +1,7 @@
 import { Component, ElementRef, QueryList, ViewChildren, OnInit } from '@angular/core';
-import { IonicModule, PopoverController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ActividadInfoComponent } from './actividad-info.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -29,8 +28,16 @@ export class BanarPage implements OnInit {
   // actividadId (optional) passed as query param ?actividadId=123
   actividadId: number | null = null;
   private actividadCompletedPosted = false;
+  // show/hide inline info overlay (fallback for Popover on APK)
+  showInfo = false;
+  infoSteps: string[] = [
+    'Paso 1: Llena la tina con agua tibia.',
+    'Paso 2: Aplica shampoo suavemente en la cabecita.',
+    'Paso 3: Usa la regadera para enjuagar con cuidado.',
+    'Paso 4: Seca con la toalla y abriga al bebé.'
+  ];
 
-  constructor(private popoverCtrl: PopoverController, private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.queryParamMap.get('actividadId');
@@ -52,14 +59,13 @@ export class BanarPage implements OnInit {
   holdTimer: any = null;
   holdCounted = false; // whether the current activeItem hold already counted
 
-  async openInfo(ev: Event) {
-    const pop = await this.popoverCtrl.create({
-      component: ActividadInfoComponent,
-      event: ev,
-      translucent: true,
-      backdropDismiss: true
-    });
-    await pop.present();
+  // Fallback info overlay: show inline HTML overlay instead of Popover
+  openInfo(_ev?: Event) {
+    this.showInfo = true;
+  }
+
+  closeInfo() {
+    this.showInfo = false;
   }
 
   ngAfterViewInit() {
