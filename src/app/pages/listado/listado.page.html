@@ -5,7 +5,7 @@
         <
       </ion-button>
     </ion-buttons>
-    <ion-title>Actividades de hoy xd</ion-title>
+    <ion-title>Actividades de hoy</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -33,10 +33,26 @@
 
     <div *ngIf="!actividades || actividades.length === 0" class="empty">No hay actividades para hoy</div>
   </div>
+
+  <!-- Inline overlay to inform user of generated PDF (fallback for APK) -->
+  <div class="info-overlay" *ngIf="showReportAlert">
+    <div class="info-card">
+      <div class="info-header" style="color:black;">
+        <h3>Reporte generado</h3>
+        <button class="close-btn" (click)="showReportAlert=false">✕</button>
+      </div>
+      <div class="info-body">
+        <p>El reporte fue generado con el nombre <strong>{{ reportFileName }}</strong>.</p>
+      </div>
+      <div class="info-actions">
+        <ion-button expand="block" (click)="showReportAlert=false" class="enter-btn">Aceptar</ion-button>
+      </div>
+    </div>
+  </div>
 </ion-content>
 
 <ion-footer class="fixed-footer">
   <ion-toolbar>
-    <ion-button expand="block" class="enter-btn" (click)="generateReport()">Generar reporte (PDF)</ion-button>
+    <ion-button expand="block" class="enter-btn" (click)="generateReport()" style="color: white;">Generar reporte (PDF)</ion-button>
   </ion-toolbar>
 </ion-footer>

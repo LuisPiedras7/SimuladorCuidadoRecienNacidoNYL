@@ -1,5 +1,5 @@
 
-/* Reuse Login styles for consistent look */
+// /* Reuse Login styles for consistent look */
 @import "../login/login.page.scss";
 
 .list-wrap {
@@ -70,7 +70,16 @@ ion-content.listado-page{
 
 /* Make footer button sit above bottom safely */
 /* Keep the footer fixed at the bottom and style the button like Login's enter-btn */
-.fixed-footer { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1004; --ion-toolbar-background: transparent; padding: 8px; }
+.fixed-footer { 
+  position: fixed; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  z-index: 1004; 
+	/* ensure the toolbar background doesn't force button text to be transparent */
+	// --ion-toolbar-background: transparent;
+  padding: 8px; 
+}
 
 /* give the list room so content isn't hidden behind the fixed footer */
 .list-wrap { padding-bottom: 88px; }
@@ -83,4 +92,47 @@ ion-button.enter-btn{
 	border-radius:12px;
 	font-weight:800;
 	text-shadow: none !important;
+}
+
+/* extra selector scoped to footer toolbar to guarantee legible text */
+.fixed-footer ion-toolbar {
+  --background: transparent;
+}
+.fixed-footer ion-button.enter-btn {
+  color: #ffffff !important;
+}
+
+/* Inline report overlay styles */
+.info-overlay {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0,0,0,0.45);
+	z-index: 9999;
+	padding: 20px;
+}
+.info-overlay .info-card {
+	width: 100%;
+	max-width: 420px;
+	background: linear-gradient(135deg, #fff7fb 0%, #f6fff7 100%);
+	border-radius: 14px;
+	box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+	padding: 16px;
+}
+.info-header {
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+}
+.info-header h3 { margin:0; font-size:1.1rem; }
+.close-btn {
+	background: transparent; border: none; font-size:1.1rem; cursor:pointer;
+}
+.info-body { color: #333; margin-top:8px; }
+.info-actions { margin-top:12px; }
+.enter-btn {
+	--background: #ff9ac3;
+	--color: #fff;
 }
